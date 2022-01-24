@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route, Link, NavLink, useNavigate } from 'react-router-dom';
 
 import './App.css';
 
@@ -24,15 +25,40 @@ const menu = {
 };
 
 function Home() {
-  return <h1>Home</h1>;
+  return (
+    <div>
+      <h1>Home</h1>
+      <p><NavLink to="/home">Home</NavLink></p>
+      <p><NavLink to="/people">People</NavLink></p>
+      <p><NavLink to="/about">About</NavLink></p>
+    </div>
+  );
 }
 
 function About() {
-  return <h1>About</h1>;
+  const navigate = useNavigate();
+  return (
+    <div>
+      <h1>About</h1>
+      <p><Link to="/about">About</Link></p>
+      <p><Link to="/people">People</Link></p>
+      <p><Link to="/home">Home</Link></p>
+      <button onClick={() => navigate("/home")}>
+        Go home!
+      </button>
+    </div>
+  );
 }
 
 function People() {
-  return <h1>People</h1>;
+  return (
+    <div>
+      <h1>People</h1>
+      <p><Link to="/people">People</Link></p>
+      <p><Link to="/home">Home</Link></p>
+      <p><Link to="/about">About</Link></p>
+    </div>
+  );
 }
 
 function Menu() {
@@ -41,7 +67,11 @@ function Menu() {
 
 function App() {
   return (
-    <Home />
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/people" element={<People />} />
+    </Routes>
   );
 }
 
