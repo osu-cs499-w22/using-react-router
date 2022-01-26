@@ -1,5 +1,13 @@
 import React from 'react';
-import { Routes, Route, Link, NavLink, useNavigate } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Link,
+  NavLink,
+  Outlet,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 
 import './App.css';
 
@@ -40,9 +48,9 @@ function About() {
   return (
     <div>
       <h1>About</h1>
-      <p><Link to="/about">About</Link></p>
-      <p><Link to="/people">People</Link></p>
       <p><Link to="/home">Home</Link></p>
+      <p><Link to="/people">People</Link></p>
+      <p><Link to="/about">About</Link></p>
       <button onClick={() => navigate("/home")}>
         Go home!
       </button>
@@ -54,16 +62,75 @@ function People() {
   return (
     <div>
       <h1>People</h1>
-      <p><Link to="/people">People</Link></p>
       <p><Link to="/home">Home</Link></p>
+      <p><Link to="/people">People</Link></p>
       <p><Link to="/about">About</Link></p>
     </div>
   );
 }
 
 function Menu() {
-  return <h1>Menu</h1>;
+  return (
+    <div>
+      <h1>Menu</h1>
+      <ul>
+        <li><Link to="">Specials</Link></li>
+        {Object.entries(menu).map(([ key, value ]) => (
+          <li key={key}><Link to={key}>{value.name}</Link></li>
+        ))}
+      </ul>
+      <Outlet />
+    </div>
+  );
 }
+
+function Specials() {
+  return <h1>Specials</h1>;
+}
+
+function NotFound() {
+  return <h1>Not found</h1>;
+}
+
+function MenuItem() {
+  const params = useParams();
+  const menuItem = menu[params.menuItem];
+  console.log("== params:", params);
+  return (menuItem ? (
+      <div>
+        <h1>{menuItem.name} - {menuItem.price}</h1>
+        <p>{menuItem.description}</p>
+        <img src={menuItem.image} />
+      </div>
+    ) : <NotFound />
+  );
+}
+
+/*
+ * /photos/<id> -> /photos/12345, /photos/98765
+ */
+
+/*
+ * /menu
+ * /menu/specials
+ * /menu/:menuItem
+ */
+
+ /*
+  * /menu/specials
+  *
+  * <Menu>
+  *   <Specials />
+  * </Menu>
+  */
+
+  /*
+   * /menu/pizza
+   *
+   * <Menu>
+   *   <MenuItem />
+   * </Menu>
+   */
 
 function App() {
   return (
@@ -71,6 +138,11 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/people" element={<People />} />
+      <Route path="/menu" element={<Menu />}>
+        <Route index element={<Specials />} />
+        <Route path=":menuItem" element={<MenuItem />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
